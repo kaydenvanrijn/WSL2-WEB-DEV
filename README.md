@@ -6,7 +6,7 @@ Example configuration
 
 ## Installation
 - Make sure you are running the latest Windows Insider build
-- Apache2 installed in WSL2
+- Make sure Apache2 is installed in WSL2 (`sudo apt install apache2`)
 
 ## Configuration
 
@@ -121,3 +121,22 @@ echo "Success";
 
 Any time you restart WSL you must run `openports.ps1`. This can be automated.
 Any time you add/remove/edit a VirtualHost in Apache2, you must restart Apache2.
+
+## IMPORTANT
+For some reason, the `IP Helper` service will not allow ODBC to connect on port `1583`. To fix this you can use this script to find the PID of IP Helper
+```
+$port=$args[0]
+
+if ([string]::IsNullOrWhiteSpace($port)) { $port=1583 };
+
+$port_info = Get-NetTCPConnection -LocalPort $port -ErrorAction:SilentlyContinue;
+
+if($port_info -eq $null) {
+    Write-Warning "Port $port does not have an active process"
+}
+else {
+    $process_info = Get-Process -Id $port_info.OwningProcess;
+    $port_info | Select-Object -Property @{N='PID';E={$process_info.Id}},@{N='ProcessName';E={$process_info.ProcessName}},LocalAddress,RemoteAddress;
+}
+```
+Afterwards, find the service by the PID in Task Manager and stop it.
