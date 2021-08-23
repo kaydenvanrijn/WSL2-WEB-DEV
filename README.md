@@ -44,6 +44,7 @@ Listen 8080
 ```
 - *Note: If using Laravel, the DocumentRoot should be set the the `public` directory in your project. Use the absolute path.
 - Run the command: ``a2ensite mysite.test``
+- Optionally disable the default: ``a2dissite 000-default``
 - Finally, run the command: ``sudo service apache2 restart``
 
 ### /etc/hosts
@@ -122,7 +123,9 @@ echo "Success";
 Any time you restart WSL you must run `openports.ps1`. This can be automated.
 Any time you add/remove/edit a VirtualHost in Apache2, you must restart Apache2.
 
-## IMPORTANT
+When you're done, you can navigate to `mysite.test:8080`!
+
+## Pervasive SQL not working?
 For some reason, the `IP Helper` service will not allow ODBC to connect on port `1583`. To fix this you can use this script to find the PID of IP Helper
 ```
 $port=$args[0]
